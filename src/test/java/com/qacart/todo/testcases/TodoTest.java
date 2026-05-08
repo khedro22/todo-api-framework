@@ -2,9 +2,11 @@ package com.qacart.todo.testcases;
 
 import com.qacart.todo.models.Todo;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 public class TodoTest {
@@ -14,17 +16,17 @@ public class TodoTest {
     public void shouldBeAbleToAddTodo()
     {
         Todo todo = new Todo("Learn Java", false);
-        given()
+        Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .body(todo)
                 .contentType(ContentType.JSON)
                 .auth().oauth2(token)
                 .when()
                 .post("/api/v1/tasks")
-                .then().log().all()
-                .assertThat().statusCode(201)
-                .assertThat().body("item", equalTo("Learn Java"))
-                .assertThat().body("isCompleted", equalTo(false));
+                .then().log().all().extract().response();
+        assertThat(response.statusCode(), equalTo(201));
+        assertThat(response.path("item"), equalTo("Learn Java"));
+        assertThat(response.path("isCompleted"), equalTo(false));
     }
 
 
@@ -32,27 +34,28 @@ public class TodoTest {
     public void shouldNotBeAbleToAddTodo()
     {
         Todo todo = new Todo("Learn Appium");
-        given()
+        Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .body(todo)
                 .contentType(ContentType.JSON)
                 .auth().oauth2(token)
                 .when()
                 .post("/api/v1/tasks")
-                .then().log().all()
-                .assertThat().statusCode(400);
+                .then().log().all().extract().response();
+        assertThat(response.statusCode(), equalTo(400));
     }
 
     @Test
     public void shouldBeAbleToDeleteTodo()
     {
-        String taskID = "69fcba6c801a360015817b92";
-        given()
+        String taskID = "69fdb19a2873ba00156e34f1";
+        Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
                 .auth().oauth2(token)
                 .when()
                 .delete("/api/v1/tasks/" + taskID)
-                .then().statusCode(200);
+                .then().log().all().extract().response();
+        assertThat(response.statusCode(), equalTo(200));
     }
 }
