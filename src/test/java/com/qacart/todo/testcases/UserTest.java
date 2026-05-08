@@ -1,5 +1,6 @@
 package com.qacart.todo.testcases;
 
+import com.qacart.todo.models.User;
 import io.restassured.http.ContentType;
 import org.testng.annotations.Test;
 
@@ -11,37 +12,26 @@ public class UserTest {
     @Test
     public void shouldBeAbleToRegister()
     {
-        String body = "{\n" +
-                "  \"firstName\": \"Hatem\",\n" +
-                "  \"lastName\": \"Hatamleh\",\n" +
-                "  \"email\": \"hatem123@example.com\",\n" +
-                "  \"password\": \"12345678\"\n" +
-                "}";
+        User user = new User("Hatem", "Hatamleh", "hatem12345@example.com", "12345678");
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
                 .when().post("/api/v1/users/register")
                 .then()
                 .log().all()
                 .assertThat().statusCode(201)
                 .assertThat().body("firstName", equalTo("Hatem"));
-
     }
 
     @Test
     public void shouldNotBeAbleToRegisterWithSameEmail()
     {
-        String body = "{\n" +
-                "  \"firstName\": \"Hatem\",\n" +
-                "  \"lastName\": \"Hatamleh\",\n" +
-                "  \"email\": \"hatem123@example.com\",\n" +
-                "  \"password\": \"12345678\"\n" +
-                "}";
+        User user = new User("Hatem", "Hatamleh", "hatem123@example.com", "12345678");
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
                 .when().post("/api/v1/users/register")
                 .then()
                 .log().all()
@@ -52,14 +42,11 @@ public class UserTest {
     @Test
     public void shouldAbleToLogin()
     {
-        String body = "{\n" +
-                "  \"email\": \"hatem123@example.com\",\n" +
-                "  \"password\": \"12345678\"\n" +
-                "}";
+        User user = new User("hatem123@example.com", "12345678");
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
                 .when().post("/api/v1/users/login")
                 .then()
                 .log().all()
@@ -70,14 +57,11 @@ public class UserTest {
     @Test
     public void shouldNotBeAbleToLoginIfTheEmailIsChanged()
     {
-        String body = "{\n" +
-                "  \"email\": \"hatem@example.com\",\n" +
-                "  \"password\": \"12345678\"\n" +
-                "}";
+        User user = new User("hatem@example.com", "12345678");
         given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
-                .body(body)
+                .body(user)
                 .when().post("/api/v1/users/login")
                 .then()
                 .log().all()
