@@ -14,7 +14,7 @@ public class UserTest {
     @Test
     public void shouldBeAbleToRegister()
     {
-        User user = new User("Hatem", "Hatamleh", "hate_m12345@example.com", "12345678");
+        User user = new User("Hatem", "Hatamleh", "hatem1_2345@example.com", "12345678");
         Response response = given()
                 .baseUri("https://qacart-todo.herokuapp.com")
                 .contentType(ContentType.JSON)
@@ -22,9 +22,9 @@ public class UserTest {
                 .when().post("/api/v1/users/register")
                 .then()
                 .log().all().extract().response();
-
+        User userResponse = response.body().as(User.class);
         assertThat(response.statusCode(), equalTo(201));
-        assertThat(response.path("firstName"), equalTo("Hatem"));
+        assertThat(userResponse.getFirstName(), equalTo(user.getFirstName()));
     }
 
     @Test
@@ -38,8 +38,9 @@ public class UserTest {
                 .when().post("/api/v1/users/register")
                 .then()
                 .log().all().extract().response();
+        Error error = response.body().as(Error.class);
         assertThat(response.statusCode(), equalTo(400));
-        assertThat(response.path("message"), equalTo("Email is already exists in the Database"));
+        assertThat(error.getMessage(), equalTo("Email is already exists in the Database"));
     }
 
     @Test
@@ -53,8 +54,10 @@ public class UserTest {
                 .when().post("/api/v1/users/login")
                 .then()
                 .log().all().extract().response();
+        User userResponse = response.body().as(User.class);
         assertThat(response.statusCode(), equalTo(200));
-        assertThat(response.path("access_token"), not(equalTo(null)));
+        assertThat(userResponse.getFirstName(), equalTo("Hatem"));
+        assertThat(userResponse.getAccessToken(), not(equalTo(null)));
     }
 
     @Test
@@ -68,7 +71,8 @@ public class UserTest {
                 .when().post("/api/v1/users/login")
                 .then()
                 .log().all().extract().response();
+        Error error = response.body().as(Error.class);
         assertThat(response.statusCode(), equalTo(401));
-        assertThat(response.path("message"), equalTo("The email and password combination is not correct, please fill a correct email and password"));
+        assertThat(error.getMessage(), equalTo("The email and password combination is not correct, please fill a correct email and password"));
     }
 }

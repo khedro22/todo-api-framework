@@ -1,5 +1,6 @@
 package com.qacart.todo.testcases;
 
+import com.qacart.todo.models.Error;
 import com.qacart.todo.models.Todo;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -11,7 +12,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class TodoTest {
 
-    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjY0OGRkYzRiMTQxMDAxNTBmYjM4MCIsImZpcnN0TmFtZSI6IkhhdGVtIiwibGFzdE5hbWUiOiJIYXRhbWxlaCIsImlhdCI6MTc3ODIyODI0Mn0.y5QlCD1fd_UxxfH2aiXy9U0mT9IPjDzJy4i0-LRdah0";
+    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjY0OGRkYzRiMTQxMDAxNTBmYjM4MCIsImZpcnN0TmFtZSI6IkhhdGVtIiwibGFzdE5hbWUiOiJIYXRhbWxlaCIsImlhdCI6MTc3ODI0MzQwNX0.eQptiB_eaMS6pFrjy9qTjw9RyGlFMZdH1q1U_lAxDrE";
     @Test
     public void shouldBeAbleToAddTodo()
     {
@@ -24,9 +25,11 @@ public class TodoTest {
                 .when()
                 .post("/api/v1/tasks")
                 .then().log().all().extract().response();
+
+        Todo todoResponse = response.body().as(Todo.class);
         assertThat(response.statusCode(), equalTo(201));
-        assertThat(response.path("item"), equalTo("Learn Java"));
-        assertThat(response.path("isCompleted"), equalTo(false));
+        assertThat(todoResponse.getItem(), equalTo(todo.getItem()));
+        assertThat(todoResponse.getIsCompleted(), equalTo(todo.getIsCompleted()));
     }
 
 
@@ -42,6 +45,10 @@ public class TodoTest {
                 .when()
                 .post("/api/v1/tasks")
                 .then().log().all().extract().response();
+
+        Error error = response.body().as(Error.class);
+        assertThat(error.getMessage(),
+                equalTo("\"isCompleted\" is required"));
         assertThat(response.statusCode(), equalTo(400));
     }
 
