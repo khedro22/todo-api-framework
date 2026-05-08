@@ -18,11 +18,13 @@ public class Todo {
     @JsonProperty("__v")
     private String v;
 
+    //To exclude the default value of isCompleted (false)
+    //@JsonInclude(JsonInclude.Include.NON_DEFAULT) ----> not efficient
     @JsonProperty("isCompleted")
-    private boolean isCompleted;
+    private Boolean isCompleted;
 
     public Todo() {}
-    public Todo(String item, boolean isCompleted)
+    public Todo(String item, Boolean isCompleted)
     {
         this.item = item;
         this.isCompleted = isCompleted;
@@ -33,12 +35,13 @@ public class Todo {
         this.item = item;
     }
 
-
-    public boolean getIsCompleted() {
+    @JsonProperty("isCompleted")
+    public Boolean getIsCompleted() {
         return isCompleted;
     }
 
-    public void setIsCompleted(boolean completed) {
+    @JsonProperty("isCompleted")
+    public void setIsCompleted(Boolean completed) {
         isCompleted = completed;
     }
 
