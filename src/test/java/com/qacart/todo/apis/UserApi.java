@@ -1,5 +1,6 @@
 package com.qacart.todo.apis;
 
+import com.qacart.todo.data.Route;
 import com.qacart.todo.models.User;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -10,10 +11,10 @@ public class UserApi {
     public static Response register(User user)
     {
         return given()
-                .baseUri("https://qacart-todo.herokuapp.com")
+                .baseUri(Route.BASE_URL)
                 .contentType(ContentType.JSON)
                 .body(user)
-                .when().post("/api/v1/users/register")
+                .when().post(Route.REGISTER_ROUTE)
                 .then()
                 .log().all().extract().response();
     }
@@ -21,10 +22,10 @@ public class UserApi {
     public static Response login(User user)
     {
         return given()
-                .baseUri("https://qacart-todo.herokuapp.com")
+                .baseUri(Route.BASE_URL)
                 .contentType(ContentType.JSON)
                 .body(user)
-                .when().post("/api/v1/users/login")
+                .when().post(Route.REGISTER_LOGIN)
                 .then()
                 .log().all().extract().response();
     }
