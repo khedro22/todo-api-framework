@@ -1,8 +1,10 @@
 package com.qacart.todo.testcases;
 
 import com.qacart.todo.apis.TodoApi;
+import com.qacart.todo.data.ErrorMessage;
 import com.qacart.todo.models.Error;
 import com.qacart.todo.models.Todo;
+import com.qacart.todo.steps.UserSteps;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
@@ -13,7 +15,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 public class TodoTest {
 
-    String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZjY0OGRkYzRiMTQxMDAxNTBmYjM4MCIsImZpcnN0TmFtZSI6IkhhdGVtIiwibGFzdE5hbWUiOiJIYXRhbWxlaCIsImlhdCI6MTc3ODI1MDgzNH0.BTlW3IZ5UR2Xk4kvQF8L6RrDtLe7CSP5BWaOIkTckdU";
+    String token = UserSteps.getToken("hatem123@example.com", "12345678");
 
     @Test
     public void shouldBeAbleToAddTodo()
@@ -35,14 +37,14 @@ public class TodoTest {
 
         Error error = response.body().as(Error.class);
         assertThat(error.getMessage(),
-                equalTo("\"isCompleted\" is required"));
+                equalTo(ErrorMessage.COMPLETED_REQUIRED));
         assertThat(response.statusCode(), equalTo(400));
     }
 
     @Test
     public void shouldBeAbleToGetTodo()
     {
-        String taskID = "69fdf64a2873ba00156e3825";
+        String taskID = "69fe01022873ba00156e38a6";
         Response response = TodoApi.getTodo(taskID, token);
         Todo todoResponse = response.body().as(Todo.class);
         assertThat(todoResponse.getItem(), equalTo("Learn Java"));
@@ -51,7 +53,7 @@ public class TodoTest {
     @Test
     public void shouldBeAbleToDeleteTodo()
     {
-        String taskID = "69fdf54b2873ba00156e3820";
+        String taskID = "69fe01022873ba00156e38a6";
         Response response = TodoApi.deleteTodo(taskID, token);
         assertThat(response.statusCode(), equalTo(200));
     }

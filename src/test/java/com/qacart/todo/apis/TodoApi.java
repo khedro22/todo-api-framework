@@ -22,8 +22,7 @@ public class TodoApi {
     public static Response deleteTodo(String taskID, String token)
     {
         return given()
-                .baseUri(Route.BASE_URL)
-                .contentType(ContentType.JSON)
+                .spec(Specs.getRequestSpec())
                 .auth().oauth2(token)
                 .when()
                 .delete(Route.TODOS_ROUTE + "/" + taskID)
@@ -32,8 +31,7 @@ public class TodoApi {
     public static Response getTodo(String taskID, String token)
     {
         return given()
-                .baseUri(Route.BASE_URL)
-                .contentType(ContentType.JSON)
+                .spec(Specs.getRequestSpec())
                 .auth().oauth2(token)
                 .when()
                 .get(Route.TODOS_ROUTE + "/" + taskID)
