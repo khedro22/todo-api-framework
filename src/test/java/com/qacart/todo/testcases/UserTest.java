@@ -2,6 +2,7 @@ package com.qacart.todo.testcases;
 
 import com.qacart.todo.apis.UserApi;
 import com.qacart.todo.models.User;
+import com.qacart.todo.steps.UserSteps;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
@@ -15,7 +16,8 @@ public class UserTest {
     @Test
     public void shouldBeAbleToRegister()
     {
-        User user = new User("Hatem", "Hatamleh", "hatem123_45@example.com", "12345678");
+        //User user = new User("Hatem", "Hatamleh", "hatem123_45@example.com", "12345678");
+        User user = UserSteps.generateUser();
         Response response = UserApi.register(user);
         // Deserialization
         User userResponse = response.body().as(User.class);
