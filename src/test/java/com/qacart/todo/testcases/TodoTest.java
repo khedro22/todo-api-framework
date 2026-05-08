@@ -44,7 +44,13 @@ public class TodoTest {
     @Test
     public void shouldBeAbleToGetTodo()
     {
-        String taskID = "69fe01022873ba00156e38a6";
+        // Create Todo first
+        Todo todo = new Todo("Learn Java", false);
+        Response addResponse = TodoApi.addTodo(todo, token);
+        Todo addedTodo = addResponse.body().as(Todo.class);
+        String taskID = addedTodo.getId();
+
+        // Get created Todo
         Response response = TodoApi.getTodo(taskID, token);
         Todo todoResponse = response.body().as(Todo.class);
         assertThat(todoResponse.getItem(), equalTo("Learn Java"));
@@ -53,7 +59,12 @@ public class TodoTest {
     @Test
     public void shouldBeAbleToDeleteTodo()
     {
-        String taskID = "69fe01022873ba00156e38a6";
+        // Create Todo first
+        Todo todo = new Todo("Learn Java", false);
+        Response addResponse = TodoApi.addTodo(todo, token);
+        Todo addedTodo = addResponse.body().as(Todo.class);
+        String taskID = addedTodo.getId();
+        // Delete created Todo
         Response response = TodoApi.deleteTodo(taskID, token);
         assertThat(response.statusCode(), equalTo(200));
     }
